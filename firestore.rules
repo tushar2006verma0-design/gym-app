@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+
+    match /{document=**} {
+      allow read, write: if true; 
+    }
+
+    match /messages/{messageId} {
+      allow read, list: if true;
+      allow create: if isSignedIn() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.proStatus == true ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isPremium == true ||
+        getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.chatCharsUsed <= 250
+      );
+      allow update, delete: if true;
+    }
+  }
+}

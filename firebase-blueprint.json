@@ -1,0 +1,102 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Public user profile data",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "username": { "type": "string" },
+        "usernameLowercase": { "type": "string" },
+        "profilePic": { "type": "string" },
+        "bio": { "type": "string" },
+        "isPremium": { "type": "boolean" },
+        "achievements": { "type": "array", "items": { "type": "string" } },
+        "workoutsCompleted": { "type": "number" },
+        "streak": { "type": "number" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "UsernameMapping": {
+      "title": "Username Mapping",
+      "description": "Ensure unique usernames",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" }
+      },
+      "required": ["uid"]
+    },
+    "Message": {
+      "title": "Chat Message",
+      "description": "World chat message",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "reportedBy": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["senderId", "timestamp"]
+    },
+    "FriendRequest": {
+      "title": "Friend Request",
+      "description": "Request to be friends",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected"] },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["senderId", "receiverId", "status", "timestamp"]
+    },
+    "Friend": {
+      "title": "Friend",
+      "description": "User's friend",
+      "type": "object",
+      "properties": {
+        "friendId": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["friendId", "timestamp"]
+    },
+    "Block": {
+      "title": "Block",
+      "description": "Blocked user",
+      "type": "object",
+      "properties": {
+        "blockedUserId": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["blockedUserId", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/usernames/{username}": {
+      "schema": { "$ref": "#/entities/UsernameMapping" },
+      "description": "Mappings for unique usernames"
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Global chat messages"
+    },
+    "/users/{userId}/friendRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/FriendRequest" },
+      "description": "Friend requests received by the user"
+    },
+    "/users/{userId}/friends/{friendId}": {
+      "schema": { "$ref": "#/entities/Friend" },
+      "description": "User's friends"
+    },
+    "/users/{userId}/blocks/{blockedId}": {
+      "schema": { "$ref": "#/entities/Block" },
+      "description": "Blocked users"
+    }
+  }
+}

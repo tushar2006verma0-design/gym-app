@@ -1,0 +1,8 @@
+{
+  "name": "IronTrack AI",
+  "description": "AI-powered fitness tracker with Razorpay integration and mobile optimization.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
