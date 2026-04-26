@@ -23,8 +23,9 @@ import {
   ChevronRight,
   LogOut,
   Send,
-  Bell,
-  Check
+  Bell, 
+  Check, 
+  UserPlus
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -645,7 +646,7 @@ const AIAgentView = ({ proStatus, onUpgrade }: { proStatus: boolean, onUpgrade: 
       
       const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY as string });
       const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-3-flash-preview',
         contents: [...messages, { role: 'user', text: userMsg }].map(m => ({ 
             role: m.role === 'assistant' ? 'model' : 'user', 
             parts: [{text: m.text}] 
@@ -704,7 +705,7 @@ const AIAgentView = ({ proStatus, onUpgrade }: { proStatus: boolean, onUpgrade: 
         <input 
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && send()}
+          onKeyPress={(e) => e.key === 'Enter' && send()}
           placeholder="Input query for high-velocity analysis..."
           className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500/50 transition-all"
         />
@@ -985,7 +986,6 @@ export default function Home() {
                     <Image 
                       src={userProfile.profilePic} 
                       fill 
-                      sizes="40px"
                       className="object-cover" 
                       alt="Profile" 
                       referrerPolicy="no-referrer"

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, orderBy, limit, onSnapshot, serverTimestamp, writeBatch, doc, setDoc } from 'firebase/firestore';
-import { Send, Image as ImageIcon, ShieldAlert, Lock, Clock } from 'lucide-react';
+import { Send, Image as ImageIcon, Search, ShieldAlert, Lock, Clock } from 'lucide-react';
 import { ProfileModal } from '@/components/profile/ProfileModal';
 
 export const WorldChatView = ({ userProfile, authUser, onUpgrade }: { userProfile: any, authUser: any, onUpgrade: () => void }) => {

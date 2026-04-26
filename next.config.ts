@@ -11,9 +11,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Suppress ESLint and TS errors during Netlify build
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
+  transpilePackages: ['recharts', 'framer-motion'],
 };
 
 export default nextConfig;

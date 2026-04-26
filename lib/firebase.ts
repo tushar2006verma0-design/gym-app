@@ -8,7 +8,7 @@ export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 
 // Test connection
-import { doc as fsDoc, getDocFromServer } from 'firebase/firestore';
+import { doc as fsDoc, getDocFromCache, getDocFromServer } from 'firebase/firestore';
 
 async function testConnection() {
   try {

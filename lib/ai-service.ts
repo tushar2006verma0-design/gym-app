@@ -19,7 +19,7 @@ export async function getWorkoutRecommendation(yesterdayPerformance: string, goa
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3-flash-preview",
       contents: [{ role: 'user', parts: [{ text: `Yesterday's Performance: ${yesterdayPerformance}. Goal: ${goal}. Suggest a short, 1-sentence intense workout recommendation for today.` }] }],
       config: {
         maxOutputTokens: 100,
@@ -37,7 +37,7 @@ export async function chatWithCoach(messages: { role: string, text: string }[], 
   try {
     const ai = getAI();
     const chat = ai.chats.create({
-      model: "gemini-2.0-flash",
+      model: "gemini-3-flash-preview",
       history: messages.map(m => ({
         role: m.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: m.text }]

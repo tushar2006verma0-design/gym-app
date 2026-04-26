@@ -78,7 +78,6 @@ export const ProfileModal = ({ user, onClose, currentProfile, authUser }: { user
                   <Image 
                     src={targetProfile.profilePic} 
                     fill 
-                    sizes="96px"
                     className="object-cover" 
                     alt="Profile" 
                     referrerPolicy="no-referrer"
