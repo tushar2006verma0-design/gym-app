@@ -5,13 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@google/genai": "latest",
     "@reduxjs/toolkit": "latest",
     "clsx": "latest",
-    "d3": "latest",
     "firebase": "latest",
     "framer-motion": "^12.38.0",
     "lucide-react": "latest",
@@ -26,6 +26,7 @@
     "tailwind-merge": "latest"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "latest",
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
