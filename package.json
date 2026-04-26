@@ -5,28 +5,27 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@google/genai": "latest",
     "@reduxjs/toolkit": "latest",
     "clsx": "latest",
+    "d3": "latest",
     "firebase": "latest",
     "framer-motion": "^12.38.0",
     "lucide-react": "latest",
     "motion": "^12.38.0",
-    "next": "16.2.4",
+    "next": "15.1.0",
     "razorpay": "latest",
-    "react": "latest",
-    "react-dom": "latest",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "react-firebase-hooks": "^5.1.1",
     "react-markdown": "latest",
     "recharts": "latest",
     "tailwind-merge": "latest"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "latest",
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
