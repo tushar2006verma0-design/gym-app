@@ -25,19 +25,13 @@ import {
   Send,
   Bell, 
   Check, 
-  UserPlus
+  UserPlus,
+  User
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
-const BarChart = dynamic(() => import('recharts').then(mod => mod.BarChart), { ssr: false });
-const Bar = dynamic(() => import('recharts').then(mod => mod.Bar), { ssr: false });
-const XAxis = dynamic(() => import('recharts').then(mod => mod.XAxis), { ssr: false });
-const YAxis = dynamic(() => import('recharts').then(mod => mod.YAxis), { ssr: false });
-const CartesianGrid = dynamic(() => import('recharts').then(mod => mod.CartesianGrid), { ssr: false });
-const Tooltip = dynamic(() => import('recharts').then(mod => mod.Tooltip), { ssr: false });
-const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
-const AreaChart = dynamic(() => import('recharts').then(mod => mod.AreaChart), { ssr: false });
-const Area = dynamic(() => import('recharts').then(mod => mod.Area), { ssr: false });
+
+const DashboardCharts = dynamic(() => import('@/components/charts/DashboardCharts').then(mod => mod.DashboardCharts), { ssr: false });
 
 import { GoogleGenAI } from "@google/genai";
 import { auth, db } from '@/lib/firebase';
@@ -45,6 +39,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, onSnapshot, getDoc, updateDoc, collection, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
 import { WorldChatView } from '@/components/chat/WorldChatView';
 import { UsernameSetupView } from '@/components/profile/UsernameSetupView';
+import { ProfilePage } from '@/components/profile/ProfilePage';
 import { signInWithGoogle, logOut } from '@/lib/auth';
 
 // --- MOCK DATA & COMPONENTS (Restoring from previous context) ---
@@ -507,17 +502,17 @@ const LeaderboardView = () => (
     </div>
 
     <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden">
-      <div className="p-4 bg-black/20 border-b border-white/10 grid grid-cols-12 gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
-        <div className="col-span-2 text-center">Rank</div>
+      <div className="p-3 sm:p-4 bg-black/20 border-b border-white/10 grid grid-cols-12 gap-2 sm:gap-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">
+        <div className="col-span-2 text-center text-[10px]">Rank</div>
         <div className="col-span-6">Athlete</div>
-        <div className="col-span-4 text-right">Volume Score</div>
+        <div className="col-span-4 text-right truncate">Volume Score</div>
       </div>
       
       <div className="divide-y divide-white/5">
         {[
           { rank: 1, name: 'You', score: '0', isMe: true },
         ].map((user, i) => (
-          <div key={i} className={`p-4 grid grid-cols-12 gap-4 items-center ${user.isMe ? 'bg-emerald-500/10' : 'hover:bg-white/5'} transition-colors`}>
+          <div key={i} className={`p-3 sm:p-4 grid grid-cols-12 gap-2 sm:gap-4 items-center ${user.isMe ? 'bg-emerald-500/10' : 'hover:bg-white/5'} transition-colors`}>
             <div className="col-span-2 flex justify-center">
               {user.rank <= 3 ? (
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${
@@ -561,24 +556,7 @@ const DashboardView = ({ proStatus }: { proStatus: boolean }) => (
           </div>
         </div>
         <div className="h-64 mt-4 w-full min-h-[256px]">
-          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-              <YAxis hide />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                itemStyle={{ color: '#10b981' }}
-              />
-              <Bar 
-                dataKey="volume" 
-                fill="#10b981" 
-                radius={[6, 6, 0, 0]} 
-                fillOpacity={0.8}
-                activeBar={{ fill: '#34d399' }}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <DashboardCharts data={chartData} />
         </div>
       </div>
       
@@ -645,6 +623,7 @@ const AIAgentView = ({ proStatus, onUpgrade }: { proStatus: boolean, onUpgrade: 
       }
       
       const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY as string });
+      
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: [...messages, { role: 'user', text: userMsg }].map(m => ({ 
@@ -656,7 +635,8 @@ const AIAgentView = ({ proStatus, onUpgrade }: { proStatus: boolean, onUpgrade: 
         }
       });
       
-      setMessages(prev => [...prev, { role: 'assistant', text: response.text || "" }]);
+      const responseText = response.text || "";
+      setMessages(prev => [...prev, { role: 'assistant', text: responseText }]);
     } catch (e: any) {
       console.error(e);
       setMessages(prev => [...prev, { role: 'assistant', text: "Neural handshake failed: " + (e.message || "Unable to reach Gemini.") }]);
@@ -797,14 +777,11 @@ export default function Home() {
     { id: 'nutrition', icon: Apple, label: 'Nutrition' },
     { id: 'ai', icon: Zap, label: 'AI Coach' },
     { id: 'leaderboard', icon: Trophy, label: 'Leaderboard' },
-    { id: 'worldchat', icon: MessageSquare, label: 'World Chat' }
+    { id: 'worldchat', icon: MessageSquare, label: 'World Chat' },
+    { id: 'profile', icon: User, label: 'Profile' }
   ];
 
   const handleUpgrade = async () => {
-    if (!authUser) {
-        alert("Please connect via World Chat tab first.");
-        return;
-    }
     try {
       const res = await fetch('/api/create-order', {
         method: 'POST',
@@ -822,13 +799,17 @@ export default function Home() {
         description: "Neural Engine Full Access",
         order_id: data.orderId,
         handler: async function (response: any) {
+          if (!authUser) {
+            alert("Please log in to complete your upgrade.");
+            return;
+          }
           const verifyRes = await fetch('/api/verify-payment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(response)
           });
           const verifyData = await verifyRes.json();
-          if (verifyData.success) {
+          if (verifyData.success && authUser) {
             await updateDoc(doc(db, 'users', authUser.uid), { isPremium: true });
             setProStatus(true);
             alert("Upgrade successful! Pro protocol unlocked.");
@@ -836,7 +817,7 @@ export default function Home() {
         },
         prefill: {
           name: userProfile?.username || "Athlete",
-          email: authUser.email || "athlete@irontrack.ai"
+          email: authUser?.email || "athlete@irontrack.ai"
         },
         theme: {
           color: "#10b981"
@@ -980,7 +961,10 @@ export default function Home() {
                <span className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">Current Level</span>
                <span className="text-xs font-bold text-emerald-400">{userProfile?.isPremium ? 'PRO_ATHLETE' : 'ROOKIE_BASE'}</span>
             </div>
-            <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 p-1 relative">
+            <button 
+              onClick={() => setActiveTab('profile')}
+              className="w-10 h-10 rounded-full bg-white/5 border border-white/10 p-1 relative transition-transform hover:scale-105"
+            >
                <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center font-black text-xs overflow-hidden relative">
                  {userProfile?.profilePic ? (
                     <Image 
@@ -992,12 +976,12 @@ export default function Home() {
                     />
                  ) : userProfile?.username?.[0]?.toUpperCase() || 'AT'}
                </div>
-            </div>
+            </button>
           </div>
         </header>
 
         {/* Dynamic Content */}
-        <section className="flex-1 p-6 lg:p-12 max-w-7xl mx-auto w-full z-10 pb-32 lg:pb-12">
+        <section className={`flex-1 max-w-7xl mx-auto w-full z-10 lg:pb-12 flex flex-col ${activeTab === 'worldchat' ? 'p-0 sm:p-6 lg:p-12 pb-[90px] h-[calc(100dvh-64px)] max-h-[calc(100dvh-64px)] lg:max-h-none overflow-hidden' : 'p-4 sm:p-6 lg:p-12 pb-[90px]'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -1005,6 +989,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
+              className="flex-1 flex flex-col h-full"
             >
               {activeTab === 'dashboard' && <DashboardView proStatus={proStatus} />}
               {activeTab === 'ai' && <AIAgentView proStatus={proStatus} onUpgrade={handleUpgrade} />}
@@ -1012,22 +997,23 @@ export default function Home() {
               {activeTab === 'nutrition' && <NutritionView />}
               {activeTab === 'leaderboard' && <LeaderboardView />}
               {activeTab === 'worldchat' && renderWorldChatOrGate()}
+              {activeTab === 'profile' && userProfile && <ProfilePage userProfile={userProfile} />}
             </motion.div>
           </AnimatePresence>
         </section>
 
         {/* Bottom Nav - Mobile Only */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0a0f1d]/90 backdrop-blur-2xl border-t border-white/5 flex items-center justify-around px-4 h-20 z-30 mb-safe">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0a0f1d]/90 backdrop-blur-2xl border-t border-white/5 flex items-center sm:justify-around overflow-x-auto px-2 h-20 z-30 mb-safe">
            {tabs.map((tab) => (
              <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center gap-1 min-w-[64px] transition-all p-3 rounded-2xl ${
-                  activeTab === tab.id ? 'text-emerald-400 bg-emerald-500/5' : 'text-slate-500'
+                className={`flex flex-col flex-shrink-0 items-center justify-center gap-1 min-w-[56px] sm:min-w-[64px] h-14 transition-all rounded-2xl px-1 ${
+                  activeTab === tab.id ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-500'
                 }`}
              >
                 <tab.icon size={20} className={activeTab === tab.id ? 'animate-bounce-short' : ''} />
-                <span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span>
+                <span className="text-[8px] font-black uppercase tracking-widest truncate max-w-full">{tab.label}</span>
              </button>
            ))}
         </nav>

@@ -5,24 +5,24 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@google/genai": "latest",
+    "@google/genai": "^1.50.1",
     "@reduxjs/toolkit": "latest",
     "clsx": "latest",
     "d3": "latest",
     "firebase": "latest",
-    "framer-motion": "^12.38.0",
-    "lucide-react": "latest",
-    "motion": "^12.38.0",
+    "framer-motion": "^11.18.2",
+    "lucide-react": "^0.474.0",
     "next": "15.1.0",
     "razorpay": "latest",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-firebase-hooks": "^5.1.1",
     "react-markdown": "latest",
-    "recharts": "latest",
+    "recharts": "^2.15.4",
     "tailwind-merge": "latest"
   },
   "devDependencies": {

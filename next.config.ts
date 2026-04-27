@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
     remotePatterns: [
       {
@@ -11,7 +12,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  transpilePackages: ['recharts', 'framer-motion'],
 };
 
 export default nextConfig;

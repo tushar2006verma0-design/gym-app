@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 export const UsernameSetupView = ({ user, onComplete }: { user: any, onComplete: () => void }) => {
   const [username, setUsername] = useState('');
@@ -13,13 +13,30 @@ export const UsernameSetupView = ({ user, onComplete }: { user: any, onComplete:
       alert('Username must be between 3 and 20 characters.');
       return;
     }
+
     setLoading(true);
     try {
+      // Check for uniqueness
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('username', '==', cleanUsername));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        alert('This username is already taken. Please choose another.');
+        setLoading(false);
+        return;
+      }
+
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
         username: cleanUsername,
+        usernameLowercase: cleanUsername.toLowerCase(),
         chatCharsUsed: 0,
         isPremium: false,
+        createdAt: Date.now(),
+        workoutsCompleted: 0,
+        streak: 0,
+        achievements: ['First Login']
       }, { merge: true });
       onComplete();
     } catch (err) {

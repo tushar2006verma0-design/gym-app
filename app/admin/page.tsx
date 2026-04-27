@@ -1,7 +1,4 @@
-'use client';
-import dynamic from 'next/dynamic';
-
-const AdminPageClient = dynamic(() => import('./page-client'), { ssr: false });
+import AdminPageClient from './page-client';
 
 export default function AdminPage() {
   return <AdminPageClient />;

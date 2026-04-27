@@ -1,37 +1,17 @@
-'use client';
-
 import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#0a0f1d',
-      color: '#cbd5e1',
-      fontFamily: 'sans-serif'
-    }}>
-      <h2 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '1rem', textTransform: 'uppercase', fontStyle: 'italic' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0f1d] text-[#cbd5e1] font-sans p-6 text-center">
+      <h2 className="text-4xl font-black uppercase italic mb-4 tracking-tighter">
         Neural Link Broken
       </h2>
-      <p style={{ color: '#94a3b8', marginBottom: '2rem', fontWeight: 'bold' }}>
+      <p className="text-slate-400 mb-8 font-bold uppercase tracking-widest text-sm">
         404 - SECTOR NOT FOUND
       </p>
       <Link 
         href="/" 
-        style={{
-          padding: '0.75rem 2rem',
-          backgroundColor: '#10b981',
-          color: '#0f172a',
-          borderRadius: '0.75rem',
-          fontWeight: 900,
-          textTransform: 'uppercase',
-          textDecoration: 'none',
-          boxShadow: '0 0 20px rgba(16,185,129,0.3)'
-        }}
+        className="px-8 py-3 bg-emerald-500 text-slate-900 rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:bg-emerald-400"
       >
         RECONNECT TO HOME
       </Link>
